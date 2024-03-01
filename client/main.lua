@@ -1,8 +1,16 @@
+ESX = exports["es_extended"]:getSharedObject()
+
+
+
+
+
+
+
+
+
+
 local robbedRecently = false
 local graj_animke_npc = false
-TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
-
-
 
 function ___KLAMER___NOTIFY___(title,text,time,type)
     if Config.Notify == 'okokNotify' then
