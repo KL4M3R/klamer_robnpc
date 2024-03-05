@@ -3,12 +3,6 @@ ESX = exports["es_extended"]:getSharedObject()
 
 local listnpcs ={}
 
-RegisterCommand('testNPC',function()
-    for i,v in pairs(listnpcs) do
-        print(v)
-        print('-')
-    end
-end)
 ESX.RegisterServerCallback('klamer_robnpc:check_npc', function(source,cb,npc)
     for i,v in pairs(listnpcs) do
         if v == npc then
