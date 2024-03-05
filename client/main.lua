@@ -7,18 +7,20 @@ ESX = exports["es_extended"]:getSharedObject()
 
 
 
-
+local listnpcs ={}
 
 local robbedRecently = false
 local graj_animke_npc = false
 
 function ___KLAMER___NOTIFY___(title,text,time,type)
+    if not title then title = '' end if not text then text = '' end if not time then time = 2500 end if not type then type = 'info' end
+
     if Config.Notify == 'okokNotify' then
         exports['okokNotify']:Alert(title, text, time, type)
     elseif Config.Notify == 'ox_lib' then
         lib.notify({title = title,description = text,type = type})    
     else
-        print('[ERROR WITH CONFIG.NOTIFY] if u want to set custom notify u need to add your export in client/main.lua line 13.')
+        print('[ERROR WITH CONFIG.NOTIFY] if u want to set custom notify u need to add your export in client/main.lua line 16.')
     end
 end
 
@@ -47,7 +49,6 @@ AddEventHandler('cwel',function(data)
     local pCoords = GetEntityCoords(playerPed, true)
     local targetPed = 	data.entity
     local tCoords = GetEntityCoords(targetPed, true)
- 
     if DoesEntityExist(targetPed) and IsEntityAPed(targetPed) then
     local bron = GetSelectedPedWeapon(GetPlayerPed(-1))
         if robbedRecently then
@@ -56,7 +57,13 @@ AddEventHandler('cwel',function(data)
             ___KLAMER___NOTIFY___(_U('target_dead'), '', 2500, 'error')
         else
             if bron ~= -1569615261 then
-                robNpc(targetPed)
+                ESX.TriggerServerCallback('klamer_robnpc:check_npc',function(robbed)
+                    if not robbed then
+                        robNpc(targetPed)
+                    else
+                        ___KLAMER___NOTIFY___(_U('already_robbed'), '', 2500, 'error')
+                    end
+                end,targetPed)
             else
                 ___KLAMER___NOTIFY___(_U('cant_rob_npc'), _U('need_weapon'), 2500, 'error')
             end
@@ -123,6 +130,12 @@ function robNpc(targetPed)
             elseif distance > 8 then
                 nie_blisko = false
                 ___done___ = false
+                if Config.ShouldWaitBetweenRobbing then
+                    Citizen.Wait(math.random(Config.MinWaitSeconds, Config.MaxWaitSeconds) * 1000)
+                    ___KLAMER___NOTIFY___(_U('end_cooldown'), '', 2500, 'info')
+                end
+        
+                robbedRecently = false
                 break
             end
             Citizen.Wait(250)
@@ -131,7 +144,7 @@ function robNpc(targetPed)
             graj_animke_npc = true
             Wait(50)
             if lib.progressBar({
-                duration = 8000,
+                duration = Config.RobAnimationSeconds * 1000,
                 label = _U('robbering_pg'),
                 useWhileDead = false,
                 canCancel = true,

@@ -1,7 +1,25 @@
 
 ESX = exports["es_extended"]:getSharedObject()
 
+local listnpcs ={}
 
+RegisterCommand('testNPC',function()
+    for i,v in pairs(listnpcs) do
+        print(v)
+        print('-')
+    end
+end)
+ESX.RegisterServerCallback('klamer_robnpc:check_npc', function(source,cb,npc)
+    for i,v in pairs(listnpcs) do
+        if v == npc then
+            print(true)
+            cb(true)
+            return
+        end
+    end
+    table.insert(listnpcs,npc)
+    cb(false)
+end)
 
 ESX.RegisterServerCallback('klamer:piecznie_chleba', function(source,cb)
     local xPlayer = ESX.GetPlayerFromId(source)
@@ -15,9 +33,9 @@ ESX.RegisterServerCallback('klamer:piecznie_chleba', function(source,cb)
     for i,v in pairs(Config.items) do
         local szansa = math.random(1,100)
         if szansa < v.chance then
-        xPlayer.addInventoryItem(v.item, 1)
-        loot = loot+1
-     end
+            xPlayer.addInventoryItem(v.item, 1)
+            loot = loot+1
+        end
     end
     if loot == 0 then
         cb(false)

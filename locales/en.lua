@@ -15,8 +15,9 @@ Locales['en'] = {
     ['end_cooldown']        = 'You can rob the npc again',
     ['cancel']              = "Cancel",
     ['too_far']             = "you've gone too far",
+    ['already_robbed']      = 'you have already robbed this NPC',
     --dispatch
-    ['robbery_notify']        = 'Robbery of a citizen',
-    ['robbery_blip_name']     = '# Robbery of a citizen',
+    ['robbery_notify']      = 'Robbery of a citizen',
+    ['robbery_blip_name']   = '# Robbery of a citizen',
 
 }
